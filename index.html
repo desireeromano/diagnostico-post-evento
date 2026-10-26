@@ -1,563 +1,361 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Diagnóstico post-evento — ¿Dónde se enfría el interés?</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Diagnóstico post-evento · ¿Dónde se enfría el interés? · Desi Romano</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,500&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
 <script>
-  // ─────────────────────────────────────────────
-  //  CONFIGURACIÓN — completá estos 4 valores
-  // ─────────────────────────────────────────────
-  const MAILERLITE_API_KEY  = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI0IiwianRpIjoiM2RlOWM4NTMxODRjY2RlNmYwMTc0ODFlNWRkMWVlYmY4ZjlkMGFmNWIyNDdmNGY0MWJkM2NjN2IzZGVkMjg4MTg5MmFiZWE1MWM1NzgwMWYiLCJpYXQiOjE3ODMzNjk4MjkuNDUwNjIzLCJuYmYiOjE3ODMzNjk4MjkuNDUwNjI1LCJleHAiOjQ5MzkwNDM0MjkuNDQ2NDk2LCJzdWIiOiI5MjI0NDgiLCJzY29wZXMiOltdfQ.jVrpwkbm54uPCax4wuvgbDoo9OPYKmIj5QQyCZOjwNr_eGFq6ZRL4uVbRxJURlEz-352HYRwErN1fTMR5eWM0rQWf3U1H37yZFS5VAorSIAHhF-bRJ_bhUAB8RjPMlnIWIbw39gwErmU13Xme_w99fRJ43irVU1msH2wo9yySZxtRyacYstevOpgQ-gnOi4JYVp2gUvCbg_8UKJKrloYQpqdoYONGkCYMIrGHieD4NEVI6yoskYUzRnI9E5-bJJsCoi2EgTTih0RQfzXetzh6yzdMncxeWC_xujV43mao5-rxTYyF86wsEO-eCyeH9mlzhB_iD2yiD9eqvL_J1PT2OnzHXtHxxDY7OpvmufKJIk7Rbhv1pxK4iyDbiQmKtTXwHGuuB2hQ1V-HjkZazC621tUHSSwpTx7GdBeoYl9AzelVeb45mWzsg9FD9SLPrRnkZkshF5rnq3swfmgKMsFxirNYr0RovGvx2i8lL639XxTX1lxIjMMAMvYtDo7loTaPST-711ILSWjrIvyOHBFo5QyWm0nRC9cykbwprXX1ymFK90JURlQ51i4XUJ93EVCglcsGIgRFP7lWIMQYhej594WSd0k3--rVTcrQSHjlbfmEU7GbaE-EzYq0U5vBpTKtIKxTvIFAD-W30o22GckB8zNWeCLElhqZYSDRGyyYhs';
-  const GRUPO_ALTO          = '191734752118572053';   // 4–5 sí
-  const GRUPO_MEDIO         = '191734761662710930';   // 2–3 sí
-  const GRUPO_BAJO          = '191734770937366527';   // 0–1 sí
-  // ─────────────────────────────────────────────
+  // Dirección de tu Cloudflare Worker (es quien habla con MailerLite).
+  // La API key de MailerLite va SOLO en el Worker, nunca en esta página.
+  const WORKER_URL = 'https://TU-WORKER.workers.dev';
 </script>
 <style>
-  :root {
-    --vino:      #5b1626;
-    --vino-deep: #3a0c16;
-    --vino-soft: #7d2235;
-    --crudo:     #f3ece2;
-    --crudo-mid: #ece3d4;
-    --crudo-dark:#ddd0bb;
-    --tinta:     #241310;
-    --tinta-soft:rgba(36,19,16,0.65);
-    --oro:       #a8793f;
-    --verde:     #2e6b4f;
-    --verde-bg:  #edf4f0;
-    --amarillo-bg:#fdf6e3;
-    --amarillo:  #9a6e1a;
-    --rojo-bg:   #fceef0;
-    --rojo:      #7d2235;
-    --linea:     rgba(36,19,16,0.12);
-  }
-  *, *::before, *::after { box-sizing: border-box; }
-  body {
-    margin: 0;
-    background: var(--crudo);
-    font-family: 'Georgia', 'Iowan Old Style', serif;
-    color: var(--tinta);
-    min-height: 100vh;
-  }
-  .page { max-width: 720px; margin: 0 auto; padding: 0 0 80px; }
+:root{--cream:#f3e1eb;--cream-deep:#e3ddcf;--charcoal:#2C2C2C;--coral:#FB6376;--coral-deep:#e14f62;--wine:#6B2737;--wine-deep:#551e2b;--white:#fff;--green:#2e6b4f;--green-bg:#e6f2ea;--amber:#8a5d12;--amber-bg:#fbf0d4;--serif:'Cormorant Garamond',serif;--sans:'TT Hoves','Jost',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--cream);color:var(--charcoal);font-family:var(--sans);font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased}
+::selection{background:var(--coral);color:var(--white)}
+.wrap{max-width:760px;margin:0 auto;padding:0 28px}
+h1,h2,h3{font-family:var(--serif);font-weight:600;color:var(--wine);line-height:1.15;margin:0}
+.eyebrow{font-size:13px;letter-spacing:.28em;text-transform:uppercase;color:var(--coral);font-weight:600;margin:0 0 18px}
 
-  /* HEADER */
-  .header { padding: 52px 40px 32px; border-bottom: 1px solid var(--linea); }
-  .eyebrow {
-    font-family: 'Helvetica Neue', Arial, sans-serif;
-    font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
-    color: var(--oro); margin: 0 0 14px;
-  }
-  .header h1 {
-    font-size: clamp(26px, 4vw, 36px); font-weight: 400; line-height: 1.12;
-    color: var(--vino-deep); margin: 0 0 16px;
-  }
-  .header-desc {
-    font-family: 'Helvetica Neue', Arial, sans-serif;
-    font-size: 15px; color: var(--tinta-soft); max-width: 50ch; line-height: 1.55; margin: 0;
-  }
+header{padding:24px 0;border-bottom:1px solid rgba(107,39,55,.12)}
+.brand-word{font-size:13px;letter-spacing:.18em;color:var(--wine);font-weight:600;text-transform:uppercase}
+.brand-word span{color:var(--coral)}
+.hero{padding:76px 0 20px;text-align:center}
+h1{font-size:clamp(32px,5.2vw,52px);letter-spacing:-.01em;margin:0 0 24px}
+.lead{font-size:18px;color:#4a4a4a;max-width:640px;margin:0 auto}
 
-  /* INSTRUCCIÓN */
-  .instruccion {
-    padding: 24px 40px; background: var(--crudo-mid); border-bottom: 1px solid var(--linea);
-    font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 13.5px; color: var(--tinta-soft);
-  }
-  .instruccion strong { color: var(--tinta); font-weight: 600; }
+section{padding:40px 0 0}
+.card{background:var(--white);border-radius:20px;padding:40px 34px;box-shadow:0 18px 40px -24px rgba(107,39,55,.35)}
+.tip{margin:0 0 28px;padding:16px 20px;background:var(--cream-deep);border-radius:14px;font-size:15.5px;color:#4a4a4a}
+.tip strong{color:var(--wine)}
 
-  /* PREGUNTAS */
-  .preguntas { padding: 36px 40px 0; }
-  .pregunta-item { margin-bottom: 28px; padding-bottom: 28px; border-bottom: 1px solid var(--linea); }
-  .pregunta-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-  .pregunta-num {
-    font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 11px;
-    letter-spacing: 0.18em; text-transform: uppercase; color: var(--vino-soft); margin: 0 0 6px;
-  }
-  .pregunta-texto { font-size: 17.5px; line-height: 1.35; margin: 0 0 18px; color: var(--tinta); }
-  .pregunta-detalle {
-    font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 13px;
-    color: var(--tinta-soft); margin: -10px 0 18px; font-style: italic;
-  }
-  .opciones { display: flex; gap: 8px; flex-wrap: wrap; }
-  .opcion {
-    display: flex; align-items: center; gap: 7px; cursor: pointer;
-    border: 1.5px solid var(--crudo-dark); border-radius: 3px; padding: 9px 16px;
-    font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 14px;
-    color: var(--tinta-soft); background: var(--crudo);
-    transition: all 0.15s ease; user-select: none; -webkit-tap-highlight-color: transparent;
-  }
-  .opcion:hover { border-color: var(--vino-soft); color: var(--vino); }
-  .opcion.selected-si  { background: #edf4f0; border-color: var(--verde); color: var(--verde); }
-  .opcion.selected-no  { background: var(--rojo-bg); border-color: var(--rojo); color: var(--rojo); }
-  .opcion.selected-nose{ background: var(--amarillo-bg); border-color: var(--amarillo); color: var(--amarillo); }
-  .opcion .dot {
-    width: 12px; height: 12px; border-radius: 50%; border: 1.5px solid currentColor;
-    flex-shrink: 0; position: relative;
-  }
-  .opcion.selected-si .dot::after,
-  .opcion.selected-no .dot::after,
-  .opcion.selected-nose .dot::after {
-    content: ''; position: absolute; inset: 2px; border-radius: 50%; background: currentColor;
-  }
+.q{padding:0 0 28px;margin:0 0 28px;border-bottom:1px solid rgba(107,39,55,.14)}
+.q:last-child{border:0;margin:0;padding:0}
+.q .num{font-size:13px;letter-spacing:.2em;text-transform:uppercase;font-weight:600;color:var(--coral);margin:0 0 6px}
+.q h3{font-size:clamp(22px,3.2vw,27px);margin:0 0 8px}
+.q .det{font-size:15px;font-style:italic;color:#7a6a70;margin:0 0 16px}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{display:flex;align-items:center;gap:12px;cursor:pointer;background:var(--cream);border:1.5px solid transparent;border-radius:14px;padding:13px 18px;font-size:16px;color:#3a3a3a;transition:border-color .2s,background .2s;-webkit-tap-highlight-color:transparent;user-select:none}
+.opt:hover{border-color:var(--coral)}
+.opt .dot{flex:none;width:18px;height:18px;border-radius:50%;border:2px solid var(--wine);position:relative;opacity:.5}
+.opt.sel-si{background:var(--green-bg);border-color:var(--green);color:var(--green)}
+.opt.sel-no{background:#fde4e8;border-color:var(--coral-deep);color:var(--wine)}
+.opt.sel-nose{background:var(--amber-bg);border-color:var(--amber);color:var(--amber)}
+.opt[class*=sel-] .dot{opacity:1;border-color:currentColor}
+.opt[class*=sel-] .dot::after{content:"";position:absolute;inset:3px;border-radius:50%;background:currentColor}
+.opt:focus-visible{outline:2px solid var(--wine);outline-offset:2px}
 
-  /* PROGRESO */
-  .progreso-wrap { padding: 28px 40px 0; }
-  .progreso-label {
-    font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px;
-    letter-spacing: 0.1em; text-transform: uppercase; color: var(--tinta-soft);
-    margin-bottom: 8px; display: flex; justify-content: space-between;
-  }
-  .progreso-bar { height: 4px; background: var(--crudo-dark); border-radius: 2px; overflow: hidden; }
-  .progreso-fill { height: 100%; background: var(--vino); border-radius: 2px; transition: width 0.4s ease; width: 0%; }
+.prog{margin-top:36px}
+.prog-l{display:flex;justify-content:space-between;font-size:13px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:var(--wine);margin-bottom:8px}
+.bar{height:8px;background:var(--cream-deep);border-radius:999px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--coral);border-radius:999px;transition:width .4s ease}
 
-  /* BOTÓN PRINCIPAL */
-  .btn-wrap { padding: 36px 40px 0; }
-  .btn-resultado {
-    font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 14px;
-    letter-spacing: 0.06em; text-transform: uppercase; color: var(--crudo);
-    background: var(--vino-deep); border: none; padding: 17px 36px;
-    cursor: pointer; border-radius: 2px; opacity: 0.3; pointer-events: none;
-    transition: opacity 0.2s ease, background 0.2s ease; width: 100%;
-  }
-  .btn-resultado.activo { opacity: 1; pointer-events: all; }
-  .btn-resultado.activo:hover { background: var(--vino-soft); }
+.btn{display:block;width:100%;background:var(--coral);color:#4a1b28;font-family:var(--sans);font-weight:600;font-size:16px;letter-spacing:.02em;border:0;cursor:pointer;padding:17px 34px;border-radius:999px;box-shadow:0 10px 24px -10px rgba(251,99,118,.55);transition:transform .18s,background .18s,opacity .2s;text-align:center;text-decoration:none}
+.btn:hover{transform:translateY(-2px);background:var(--coral-deep)}
+.btn:disabled{opacity:.6;cursor:wait;transform:none}
+#btn-resultado{margin-top:26px;opacity:.35;pointer-events:none;box-shadow:none}
+#btn-resultado.activo{opacity:1;pointer-events:auto;box-shadow:0 10px 24px -10px rgba(251,99,118,.55)}
 
-  /* ── CAPTURA DE EMAIL ── */
-  .email-gate {
-    display: none;
-    margin: 36px 40px 0;
-    background: var(--vino-deep);
-    padding: 36px 36px 40px;
-    border-radius: 2px;
-    animation: fadeUp 0.3s ease both;
-  }
-  .email-gate.visible { display: block; }
-  .email-gate-tag {
-    font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 11px;
-    letter-spacing: 0.2em; text-transform: uppercase; color: var(--oro); margin: 0 0 12px;
-  }
-  .email-gate h3 {
-    font-size: 22px; font-weight: 400; color: var(--crudo); margin: 0 0 10px; line-height: 1.25;
-  }
-  .email-gate p {
-    font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 14px;
-    color: rgba(243,236,226,0.72); line-height: 1.6; margin: 0 0 28px;
-  }
-  .email-fields { display: flex; flex-direction: column; gap: 12px; }
-  .email-fields input {
-    font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 15px;
-    padding: 14px 16px; border: 1.5px solid rgba(243,236,226,0.25);
-    background: rgba(243,236,226,0.08); color: var(--crudo);
-    border-radius: 2px; outline: none; transition: border-color 0.15s;
-    width: 100%;
-  }
-  .email-fields input::placeholder { color: rgba(243,236,226,0.4); }
-  .email-fields input:focus { border-color: var(--oro); }
-  .btn-enviar {
-    font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 14px;
-    letter-spacing: 0.06em; text-transform: uppercase;
-    color: var(--vino-deep); background: var(--crudo);
-    border: none; padding: 16px; border-radius: 2px;
-    cursor: pointer; transition: background 0.2s; width: 100%; margin-top: 4px;
-  }
-  .btn-enviar:hover { background: var(--crudo-mid); }
-  .btn-enviar:disabled { opacity: 0.5; cursor: not-allowed; }
-  .email-error {
-    font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 13px;
-    color: #f4a0a8; margin: 8px 0 0; display: none;
-  }
-  .email-privacidad {
-    font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 11.5px;
-    color: rgba(243,236,226,0.4); margin: 14px 0 0;
-  }
+/* email */
+.gate{display:none;background:var(--wine);color:var(--cream);border-radius:20px;padding:40px 34px;margin-top:40px;animation:up .3s ease both}
+.gate.visible{display:block}
+.gate h3{color:var(--cream);font-size:clamp(26px,4vw,34px);margin:0 0 12px}
+.gate>p{color:rgba(243,225,235,.85);margin:0 0 24px;font-size:16px}
+.gate input{width:100%;font-family:var(--sans);font-size:17px;color:var(--charcoal);background:var(--cream);border:1.5px solid transparent;border-radius:12px;padding:15px 18px;margin-bottom:12px;transition:border-color .2s,background .2s}
+.gate input::placeholder{color:#8a7a80}
+.gate input:focus{outline:none;border-color:var(--coral);background:var(--white)}
+.gate input:focus-visible{outline:2px solid var(--cream);outline-offset:2px}
+.err{display:none;margin:4px 0 12px;font-size:15px;color:#ffd0d6;text-align:center}
+.fine{margin:16px 0 0;font-size:13px;color:rgba(243,225,235,.6);text-align:center;line-height:1.5}
+@keyframes up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 
-  /* RESULTADO */
-  .resultado { display: none; margin: 40px 40px 0; animation: fadeUp 0.35s ease both; }
-  .resultado.visible { display: block; }
-  @keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+/* resultado */
+.res{display:none;margin-top:40px;animation:up .35s ease both}
+.res.visible{display:block}
+.res-h{padding:36px 34px 30px;border-radius:20px 20px 0 0}
+.nivel-alto{background:var(--green-bg)}.nivel-medio{background:var(--amber-bg)}.nivel-bajo{background:#fde4e8}
+.res-tag{font-size:13px;letter-spacing:.2em;text-transform:uppercase;font-weight:600;margin:0 0 12px}
+.nivel-alto .res-tag{color:var(--green)}.nivel-medio .res-tag{color:var(--amber)}.nivel-bajo .res-tag{color:var(--coral-deep)}
+.res-t{font-size:clamp(26px,4vw,34px);margin:0 0 18px}
+.res-d p{margin:0 0 14px;color:#3a3a3a}
+.res-d p:last-child{margin:0}
+.desg{background:var(--white);padding:30px 34px}
+.desg h4{margin:0 0 12px;font-size:13px;letter-spacing:.18em;text-transform:uppercase;font-weight:600;color:var(--wine)}
+.desg ul{list-style:none;margin:0;padding:0}
+.desg li{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid rgba(107,39,55,.12);font-size:16px;line-height:1.5}
+.desg li:last-child{border:0}
+.next{background:var(--wine);color:var(--cream);padding:36px 34px;border-radius:0 0 20px 20px}
+.next .eyebrow{margin-bottom:12px}
+.next h3{color:var(--cream);font-size:clamp(24px,3.6vw,30px);margin:0 0 14px}
+.next p{color:rgba(243,225,235,.85);margin:0 0 24px;font-size:16px}
+.next .btn{display:inline-block;width:auto}
+.next .nota{margin:16px 0 0;font-size:13px;color:rgba(243,225,235,.6)}
+.again{text-align:right;padding-top:22px;display:none}
+.again button{font-family:var(--sans);font-size:14px;color:var(--wine);background:none;border:0;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
 
-  .resultado-header { padding: 32px 32px 24px; border-radius: 2px 2px 0 0; }
-  .resultado-header.nivel-alto  { background: var(--verde-bg); }
-  .resultado-header.nivel-medio { background: var(--amarillo-bg); }
-  .resultado-header.nivel-bajo  { background: var(--rojo-bg); }
-  .resultado-tag {
-    font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 11px;
-    letter-spacing: 0.2em; text-transform: uppercase; margin: 0 0 10px;
-  }
-  .nivel-alto  .resultado-tag { color: var(--verde); }
-  .nivel-medio .resultado-tag { color: var(--amarillo); }
-  .nivel-bajo  .resultado-tag { color: var(--rojo); }
-  .resultado-titulo {
-    font-size: clamp(20px, 3.2vw, 26px); font-weight: 400; line-height: 1.2;
-    margin: 0 0 14px; color: var(--vino-deep);
-  }
-  .resultado-diagnostico {
-    font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 15px;
-    line-height: 1.6; color: var(--tinta);
-  }
-  .resultado-diagnostico p { margin: 0 0 14px; }
-  .resultado-diagnostico p:last-child { margin-bottom: 0; }
+footer{padding:44px 0 60px;text-align:center}
+footer .brand-word{display:block;margin-bottom:6px}
+footer .tag{font-family:var(--serif);font-style:italic;color:var(--wine);font-size:18px}
 
-  .desglose { background: white; padding: 28px 32px; border-left: 1px solid var(--linea); border-right: 1px solid var(--linea); }
-  .desglose-label {
-    font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 11px;
-    letter-spacing: 0.18em; text-transform: uppercase; color: var(--tinta-soft); margin: 0 0 16px;
-  }
-  .desglose-lista { list-style: none; margin: 0; padding: 0; }
-  .desglose-lista li {
-    display: flex; align-items: flex-start; gap: 12px; padding: 10px 0;
-    border-bottom: 1px solid var(--linea); font-family: 'Helvetica Neue', Arial, sans-serif;
-    font-size: 14px; line-height: 1.45; color: var(--tinta);
-  }
-  .desglose-lista li:last-child { border-bottom: none; }
-  .desglose-lista .icono { flex-shrink: 0; font-size: 13px; margin-top: 1px; }
-
-  .proximo { background: var(--vino-deep); padding: 32px 32px; border-radius: 0 0 2px 2px; }
-  .proximo-tag {
-    font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 11px;
-    letter-spacing: 0.2em; text-transform: uppercase; color: var(--oro); margin: 0 0 12px;
-  }
-  .proximo h3 { font-size: 19px; font-weight: 400; color: var(--crudo); margin: 0 0 12px; line-height: 1.3; }
-  .proximo p { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 14.5px; color: rgba(243,236,226,0.78); line-height: 1.6; margin: 0 0 24px; }
-  .proximo-cta {
-    display: inline-block; font-family: 'Helvetica Neue', Arial, sans-serif;
-    font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase;
-    color: var(--vino-deep); background: var(--crudo); padding: 14px 28px;
-    border-radius: 2px; text-decoration: none; transition: background 0.2s;
-  }
-  .proximo-cta:hover { background: var(--crudo-mid); }
-  .proximo-nota { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 11.5px; color: rgba(243,236,226,0.45); margin: 14px 0 0 !important; }
-
-  .reiniciar-wrap { padding: 24px 40px 0; text-align: right; display: none; }
-  .btn-reiniciar {
-    font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 12px;
-    letter-spacing: 0.1em; text-transform: uppercase; color: var(--tinta-soft);
-    background: none; border: none; cursor: pointer; padding: 0;
-    text-decoration: underline; text-underline-offset: 3px;
-  }
-  .btn-reiniciar:hover { color: var(--vino); }
-
-  @media (max-width: 520px) {
-    .header, .instruccion, .preguntas,
-    .progreso-wrap, .btn-wrap, .reiniciar-wrap { padding-left: 22px; padding-right: 22px; }
-    .email-gate, .resultado { margin-left: 22px; margin-right: 22px; }
-    .resultado-header, .desglose, .proximo, .email-gate { padding-left: 22px; padding-right: 22px; }
-    .opciones { gap: 6px; }
-    .opcion { font-size: 13px; padding: 8px 12px; }
-  }
+@media(max-width:640px){.hero{padding:52px 0 12px}.card,.gate{padding:30px 20px}.res-h,.desg,.next{padding-left:22px;padding-right:22px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn,.bar i{transition:none}}
 </style>
 </head>
 <body>
-<div class="page">
 
-  <div class="header">
-    <p class="eyebrow">Diagnóstico gratuito para Mujeres del Vino · 5 preguntas</p>
-    <h1>¿En cuál de los 5 puntos estás dejando enfriar la experiencia que creaste en tu evento?</h1>
-    <p class="header-desc">Respondé con honestidad pensando en tu último evento, cata o feria. El diagnóstico está pensado para ayudarte a identificar qué ocurre cuando termina tu evento, con los contactos que ya te dijeron que sí. Para que continúes la conversación mientras ellos, continuan la experiencia. Hacela con honestidad hacia vos misma: es para que veas exactamente dónde está la fuga.</p>
-  </div>
+<header><div class="wrap"><span class="brand-word">Desi Romano <span>·</span> Estrategia&amp;Narrativa</span></div></header>
 
-  <div class="instruccion">
-    Para cada pregunta elegí la opción que mejor describe lo que <strong>realmente</strong> hacés actualmente, no lo que te gustaría hacer.
-  </div>
+<main class="wrap">
 
-  <div class="preguntas" id="preguntas">
-
-    <div class="pregunta-item" data-id="1">
-      <p class="pregunta-num">Punto 01 — Identificación</p>
-      <p class="pregunta-texto">¿Podés nombrar hoy quiénes, de tu último evento, mostraron interés real en vos o en tus vinos?</p>
-      <p class="pregunta-detalle">No "la gente que vino". Las personas específicas que preguntaron, se quedaron a charlar, o pidieron más información.Los que te hicieron saber que estaban realmente interesados.</p>
-      <div class="opciones">
-        <label class="opcion" data-value="si"><span class="dot"></span> Sí, los tengo identificados</label>
-        <label class="opcion" data-value="no"><span class="dot"></span> No, no recuerdo quiénes fueron</label>
-        <label class="opcion" data-value="nose"><span class="dot"></span> No sé bien cómo medirlo</label>
-      </div>
-    </div>
-
-    <div class="pregunta-item" data-id="2">
-      <p class="pregunta-num">Punto 02 — Siguiente paso</p>
-      <p class="pregunta-texto">¿Había un paso concreto definido para después del evento?</p>
-      <p class="pregunta-detalle">Algo que la persona pudiera hacer o que vos pudieras activar en las 48 horas siguientes: un formulario, un mensaje, una llamada, un link.</p>
-      <div class="opciones">
-        <label class="opcion" data-value="si"><span class="dot"></span> Sí, estaba definido</label>
-        <label class="opcion" data-value="no"><span class="dot"></span> No, no había nada armado</label>
-        <label class="opcion" data-value="nose"><span class="dot"></span> Tenía algo armado, pero no lo usé</label>
-      </div>
-    </div>
-
-    <div class="pregunta-item" data-id="3">
-      <p class="pregunta-num">Punto 03 — Momento de reaparición</p>
-      <p class="pregunta-texto">¿Cuándo volviste a aparecer después del evento?</p>
-      <p class="pregunta-detalle">No hablo de redes sociales o contenido general. Hablo de un contacto específico dirigido a las personas que estuvieron ahí.</p>
-      <div class="opciones">
-        <label class="opcion" data-value="si"><span class="dot"></span> Dentro de las 48–72 hs</label>
-        <label class="opcion" data-value="no"><span class="dot"></span> No volví a aparecer</label>
-        <label class="opcion" data-value="nose"><span class="dot"></span> Volví semanas después</label>
-      </div>
-    </div>
-
-    <div class="pregunta-item" data-id="4">
-      <p class="pregunta-num">Punto 04 — El mensaje</p>
-      <p class="pregunta-texto">¿Qué mensaje recibió esa persona después del evento?</p>
-      <p class="pregunta-detalle">¿Hubo algo específico o la misma comunicación general que recibe cualquier contacto tuyo?</p>
-      <div class="opciones">
-        <label class="opcion" data-value="si"><span class="dot"></span> Un mensaje pensado para ellas</label>
-        <label class="opcion" data-value="no"><span class="dot"></span> No, no mandé nada</label>
-        <label class="opcion" data-value="nose"><span class="dot"></span> El mismo que mando a todos cuando me envían un mensaje</label>
-      </div>
-    </div>
-
-    <div class="pregunta-item" data-id="5">
-      <p class="pregunta-num">Punto 05 — Continuidad</p>
-      <p class="pregunta-texto">¿Tenés una forma de convertir esa conversación en una relación continua?</p>
-      <p class="pregunta-detalle">No necesariamente un sistema complejo. Algo que evite que el vínculo que generaste en el evento se empiece de cero la próxima vez.</p>
-      <div class="opciones">
-        <label class="opcion" data-value="si"><span class="dot"></span> Sí, tengo algo armado</label>
-        <label class="opcion" data-value="no"><span class="dot"></span> No, cada evento es desde cero</label>
-        <label class="opcion" data-value="nose"><span class="dot"></span> Lo intuyo pero no lo tengo claro</label>
-      </div>
-    </div>
-
-  </div>
-
-  <div class="progreso-wrap">
-    <div class="progreso-label">
-      <span>Progreso</span>
-      <span id="progreso-count">0 de 5 respondidas</span>
-    </div>
-    <div class="progreso-bar"><div class="progreso-fill" id="progreso-fill"></div></div>
-  </div>
-
-  <div class="btn-wrap">
-    <button class="btn-resultado" id="btn-resultado">Ver mi resultado</button>
-  </div>
-
-  <!-- EMAIL GATE -->
-  <div class="email-gate" id="email-gate">
-    <p class="email-gate-tag">Listo</p>
-    <h3>¿A qué correo querés que te mande el análisis completo?</h3>
-    <p>Dejame tu nombre y tu email. Ya tenés el panorama completo. Te muestro, punto por punto, dónde está la fuga. Y cuáles son los pasos que vienen para cerrar la fuga que encontraste hoy.</p>
-    <div class="email-fields">
-      <input type="text"  id="input-nombre" placeholder="Tu nombre" autocomplete="given-name" />
-      <input type="email" id="input-email"  placeholder="Tu email" autocomplete="email" />
-      <button class="btn-enviar" id="btn-enviar">Ver mi resultado →</button>
-      <p class="email-error" id="email-error">Revisá que el email esté bien escrito.</p>
-    </div>
-    <p class="email-privacidad">Sin spam. Solo los pasos y la secuencia que corresponde a tu resultado. Revisá la casillas de promociones o spam si no lo recibiste inmediatamente.</p>
-  </div>
-
-  <!-- RESULTADO -->
-  <div class="resultado" id="resultado"></div>
-
-  <div class="reiniciar-wrap" id="reiniciar-wrap">
-    <button class="btn-reiniciar" id="btn-reiniciar">Volver a empezar</button>
-  </div>
-
+<div class="hero">
+  <p class="eyebrow">Diagnóstico gratuito para mujeres del vino · 5 preguntas</p>
+  <h1>¿En cuál de los 5 puntos estás dejando enfriar la experiencia que creaste en tu evento?</h1>
+  <p class="lead">Respondé con honestidad pensando en tu último evento, cata o feria. El diagnóstico está pensado para ayudarte a identificar qué ocurre cuando termina tu evento, con los contactos que ya te dijeron que sí. Para que continúes la conversación mientras ellos continúan la experiencia. Hacela con honestidad hacia vos misma: es para que veas exactamente dónde está la fuga.</p>
 </div>
 
+<section>
+  <div class="card">
+    <p class="tip">Para cada pregunta elegí la opción que mejor describe lo que <strong>realmente</strong> hacés actualmente, no lo que te gustaría hacer.</p>
+
+    <div class="q" data-id="1">
+      <p class="num">Punto 01 · Identificación</p>
+      <h3>¿Podés nombrar hoy quiénes, de tu último evento, mostraron interés real en vos o en tus vinos?</h3>
+      <p class="det">No "la gente que vino". Las personas específicas que preguntaron, se quedaron a charlar, o pidieron más información. Los que te hicieron saber que estaban realmente interesados.</p>
+      <div class="opts">
+        <label class="opt" tabindex="0" data-value="si"><span class="dot"></span>Sí, los tengo identificados</label>
+        <label class="opt" tabindex="0" data-value="no"><span class="dot"></span>No, no recuerdo quiénes fueron</label>
+        <label class="opt" tabindex="0" data-value="nose"><span class="dot"></span>No sé bien cómo medirlo</label>
+      </div>
+    </div>
+
+    <div class="q" data-id="2">
+      <p class="num">Punto 02 · Siguiente paso</p>
+      <h3>¿Había un paso concreto definido para después del evento?</h3>
+      <p class="det">Algo que la persona pudiera hacer o que vos pudieras activar en las 48 horas siguientes: un formulario, un mensaje, una llamada, un link.</p>
+      <div class="opts">
+        <label class="opt" tabindex="0" data-value="si"><span class="dot"></span>Sí, estaba definido</label>
+        <label class="opt" tabindex="0" data-value="no"><span class="dot"></span>No, no había nada armado</label>
+        <label class="opt" tabindex="0" data-value="nose"><span class="dot"></span>Tenía algo armado, pero no lo usé</label>
+      </div>
+    </div>
+
+    <div class="q" data-id="3">
+      <p class="num">Punto 03 · Momento de reaparición</p>
+      <h3>¿Cuándo volviste a aparecer después del evento?</h3>
+      <p class="det">No hablo de redes sociales o contenido general. Hablo de un contacto específico dirigido a las personas que estuvieron ahí.</p>
+      <div class="opts">
+        <label class="opt" tabindex="0" data-value="si"><span class="dot"></span>Dentro de las 48–72 hs</label>
+        <label class="opt" tabindex="0" data-value="no"><span class="dot"></span>No volví a aparecer</label>
+        <label class="opt" tabindex="0" data-value="nose"><span class="dot"></span>Volví semanas después</label>
+      </div>
+    </div>
+
+    <div class="q" data-id="4">
+      <p class="num">Punto 04 · El mensaje</p>
+      <h3>¿Qué mensaje recibió esa persona después del evento?</h3>
+      <p class="det">¿Hubo algo específico o la misma comunicación general que recibe cualquier contacto tuyo?</p>
+      <div class="opts">
+        <label class="opt" tabindex="0" data-value="si"><span class="dot"></span>Un mensaje pensado para ellas</label>
+        <label class="opt" tabindex="0" data-value="no"><span class="dot"></span>No, no mandé nada</label>
+        <label class="opt" tabindex="0" data-value="nose"><span class="dot"></span>El mismo que mando a todos cuando me envían un mensaje</label>
+      </div>
+    </div>
+
+    <div class="q" data-id="5">
+      <p class="num">Punto 05 · Continuidad</p>
+      <h3>¿Tenés una forma de convertir esa conversación en una relación continua?</h3>
+      <p class="det">No necesariamente un sistema complejo. Algo que evite que el vínculo que generaste en el evento se empiece de cero la próxima vez.</p>
+      <div class="opts">
+        <label class="opt" tabindex="0" data-value="si"><span class="dot"></span>Sí, tengo algo armado</label>
+        <label class="opt" tabindex="0" data-value="no"><span class="dot"></span>No, cada evento es desde cero</label>
+        <label class="opt" tabindex="0" data-value="nose"><span class="dot"></span>Lo intuyo pero no lo tengo claro</label>
+      </div>
+    </div>
+
+    <div class="prog">
+      <div class="prog-l"><span>Progreso</span><span id="progreso-count">0 de 5 respondidas</span></div>
+      <div class="bar"><i id="progreso-fill"></i></div>
+    </div>
+    <button class="btn" id="btn-resultado">Ver mi resultado</button>
+  </div>
+
+  <div class="gate" id="email-gate">
+    <p class="eyebrow">Listo</p>
+    <h3>¿A qué correo querés que te mande el análisis completo?</h3>
+    <p>Dejame tu nombre y tu email. Ya tenés el panorama completo. Te muestro, punto por punto, dónde está la fuga. Y cuáles son los pasos que vienen para cerrar la fuga que encontraste hoy.</p>
+    <input type="text" id="input-nombre" placeholder="Tu nombre" autocomplete="given-name" aria-label="Tu nombre">
+    <input type="email" id="input-email" placeholder="Tu email" autocomplete="email" aria-label="Tu email">
+    <p class="err" id="email-error">Revisá que el email esté bien escrito.</p>
+    <button class="btn" id="btn-enviar">Ver mi resultado</button>
+    <p class="fine">Sin spam. Solo los pasos y la secuencia que corresponde a tu resultado. Revisá la casilla de promociones o spam si no lo recibiste inmediatamente.</p>
+  </div>
+
+  <div class="res" id="resultado"></div>
+  <div class="again" id="reiniciar-wrap"><button id="btn-reiniciar">Volver a empezar</button></div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span class="brand-word">Desi Romano <span>·</span> Estrategia&amp;Narrativa</span>
+    <span class="tag">Estrategia · Narrativa · Mujeres del Vino</span>
+  </div>
+</footer>
+
 <script>
-  const respuestas = {};
-  const total = 5;
+const respuestas = {};
+const total = 5;
 
-  const labels = {
-    1: { si:'✅ Ya sabés reconocer quién mostró un interés genuino en vos o tus vinos.', no:'❌ Todavía no tenés una forma clara de identificar a las personas con más intención de compra.', nose:'⚠️ Te cuesta diferenciar a quienes tienen interés real de cortesía.' },
-    2: { si:'✅ Cada persona se fue con un próximo paso claro.', no:'❌ Cuando termina el evento, sentís que la conversación queda sin una continuidad definida.', nose:'⚠️ Pensaste en armar algo para el cierre del evento, pero no lo activaste porque no sabés qué decir exactamente.' },
-    3: { si:'✅ Volviste a estar presente cuando el interés seguía vivo.', no:'❌ Después del evento, el contacto quedó en pausa.', nose:'⚠️ Sabés que ese momento necesita un siguiente paso, pero todavía no forma parte de tu recorrido.' },
-    4: { si:'✅ Cada mensaje tuvo una intención clara y hablaste de forma cercana.', no:'❌ Te cuesta saber qué mensaje mandar para acompañar la experiencia post-evento.', nose:'⚠️ Retomaste la conversación cuando el entusiasmo ya había empezado a bajar.' },
-    5: { si:'✅ Ya tenés una forma de seguir construyendo el vínculo después del evento.', no:'❌ Cada nueva feria o cata sentís que empieza de cero.', nose:'⚠️ Intuís que el verdadero cierre del evento ocurre después, pero todavía estás construyendo esa parte del recorrido.' },
-  };
+const labels = {
+  1:{si:'✅ Ya sabés reconocer quién mostró un interés genuino en vos o tus vinos.',no:'❌ Todavía no tenés una forma clara de identificar a las personas con más intención de compra.',nose:'⚠️ Te cuesta diferenciar a quienes tienen interés real de cortesía.'},
+  2:{si:'✅ Cada persona se fue con un próximo paso claro.',no:'❌ Cuando termina el evento, sentís que la conversación queda sin una continuidad definida.',nose:'⚠️ Pensaste en armar algo para el cierre del evento, pero no lo activaste porque no sabés qué decir exactamente.'},
+  3:{si:'✅ Volviste a estar presente cuando el interés seguía vivo.',no:'❌ Después del evento, el contacto quedó en pausa.',nose:'⚠️ Sabés que ese momento necesita un siguiente paso, pero todavía no forma parte de tu recorrido.'},
+  4:{si:'✅ Cada mensaje tuvo una intención clara y hablaste de forma cercana.',no:'❌ Te cuesta saber qué mensaje mandar para acompañar la experiencia post-evento.',nose:'⚠️ Retomaste la conversación cuando el entusiasmo ya había empezado a bajar.'},
+  5:{si:'✅ Ya tenés una forma de seguir construyendo el vínculo después del evento.',no:'❌ Cada nueva feria o cata sentís que empieza de cero.',nose:'⚠️ Intuís que el verdadero cierre del evento ocurre después, pero todavía estás construyendo esa parte del recorrido.'}
+};
 
-  const resultados = {
-    alto: {
-      clase: 'nivel-alto',
-      tag: 'Resultado: Ya tenés una base sólida',
-      titulo: 'Tu forma de vender ya genera confianza. Ahora toca lograr que esa experiencia siga dando frutos cuando el evento termina.',
-      diagnostico: '<p>Hay algo que ya funciona muy bien: sabés crear una experiencia que conecta. En tus catas, ferias o degustaciones la gente escucha, pregunta, disfruta y confía en tu recomendación.</p>' +
-        '<p>El desafío aparece después.</p>' +
-        '<p>Cuando termina el encuentro, ese interés queda dependiendo de que vos recuerdes escribir, hacer un seguimiento o retomar la conversación. Y eso, con el ritmo del día a día, no siempre pasa.</p>' +
-        '<p>No necesitás cambiar la forma en la que vendés. Solo darle continuidad para que cada persona siga sintiendo tu presencia, incluso cuando ya guardaste las copas.</p>',
-      proximo_titulo: 'Descubrí dónde se corta el recorrido, e identificá la fuga.',
-      proximo_texto: 'Fijate en cuál de los cinco puntos respondiste "A veces" o "No sé". Ahí hay una oportunidad concreta para mejorar la experiencia de tus futuros clientes. En los próximos correos te voy a mostrar cómo resolver ese punto con un seguimiento simple, cercano y natural.',
-      cta: 'Revisar mi email'
-    },
-    medio: {
-      clase: 'nivel-medio',
-      tag: 'Tené la oportunidad de acompañar mejor a tus contactos',
-      titulo: 'Estás generando interés. Ahora hace falta que sostengas esa conversación.',
-      diagnostico: '<p>Hay energía y conexión en los eventos a los que asistís o las catas que organizas. Cada evento deja personas que disfrutaron conocerte, probar tus vinos o escuchar lo que hacés.</p>' +
-        '<p>Muchas incluso se van pensando: "Después le escribo".</p>' +
-        '<p>Pero entre la rutina de ambas, esa conversación se enfría y la oportunidad queda ahí, sin avanzar.</p>' +
-        '<p>No estás haciendo las cosas mal. Ni es falta de interés.</p>' +
-        '<p>Simplemente todavía no usaste una forma sencilla de acompañar a cada persona después del evento, sin que eso dependa de tu memoria o de tener un rato libre.</p>' +
-        '<p>Pero calma, porque hay solución.</p>',
-      proximo_titulo: 'Empecemos por un seguimiento simple.',
-      proximo_texto: 'No necesitás automatizaciones complejas ni aprender herramientas difíciles. Con un recorrido claro y algunos mensajes bien pensados, podés seguir presente sin perder la cercanía que hace única tu forma de vender. En los próximos correos te voy a mostrar cómo hacerlo.',
-      cta: 'Revisar mi email'
-    },
-    bajo: {
-      clase: 'nivel-bajo',
-      tag: 'Resultado: Hay una gran oportunidad después de cada evento',
-      titulo: 'Tu evento funciona. El trabajo más difícil ya lo hacés: lograr que alguien se acerque. Ahora falta acompañar ese interés.',
-      diagnostico: '<p>Organizar una cata, participar en una feria o presentar tus vinos requiere tiempo, energía y mucha dedicación.</p>' +
-        '<p>Y cuando alguien se detiene a conversar con vos, ya pasó lo más difícil: conseguiste interés y confianza.</p>' +
-        '<p>Lo que falta no es esfuerzo. Es una manera de continuar esa conversación cuando el evento termina.</p>' +
-        '<p>Porque si ese contacto no recibe un próximo paso, es muy fácil que la intención se diluya entre las cosas que pasan en el día a día.</p>' +
-        '<p>La buena noticia es que no hace falta perseguir a nadie, ni estar enviando mensajes todo el tiempo. Hace falta un recorrido simple que mantenga vivo ese vínculo.</p>',
-      proximo_titulo: 'Empezá por nutrir lo que ya conseguiste, la atención de quién asistió o habló con vos.',
-      proximo_texto: 'Antes de pensar en el mensaje perfecto, hay que resolver lo básico: saber quién estuvo ahí y qué pasa con esa persona en las 48 horas siguientes. Vamos a recorrer ese proceso paso a paso. En los próximos correos te voy a mostrar cómo acompañar a cada contacto durante los días posteriores al evento con un sistema sencillo y humanizado, para que más personas vuelvan a elegirte sin sentir que les estás vendiendo todo el tiempo.',
-      cta: 'Revisar mi email'
-    }
-  };
+const resultados = {
+  alto:{
+    clase:'nivel-alto',
+    tag:'Resultado: ya tenés una base sólida',
+    titulo:'Tu forma de vender ya genera confianza. Ahora toca lograr que esa experiencia siga dando frutos cuando el evento termina.',
+    diagnostico:'<p>Hay algo que ya funciona muy bien: sabés crear una experiencia que conecta. En tus catas, ferias o degustaciones la gente escucha, pregunta, disfruta y confía en tu recomendación.</p><p>El desafío aparece después.</p><p>Cuando termina el encuentro, ese interés queda dependiendo de que vos recuerdes escribir, hacer un seguimiento o retomar la conversación. Y eso, con el ritmo del día a día, no siempre pasa.</p><p>No necesitás cambiar la forma en la que vendés. Solo darle continuidad para que cada persona siga sintiendo tu presencia, incluso cuando ya guardaste las copas.</p>',
+    proximo_titulo:'Descubrí dónde se corta el recorrido, e identificá la fuga.',
+    proximo_texto:'Fijate en cuál de los cinco puntos respondiste "A veces" o "No sé". Ahí hay una oportunidad concreta para mejorar la experiencia de tus futuros clientes. En los próximos correos te voy a mostrar cómo resolver ese punto con un seguimiento simple, cercano y natural.',
+    cta:'Revisar mi email'
+  },
+  medio:{
+    clase:'nivel-medio',
+    tag:'Tenés la oportunidad de acompañar mejor a tus contactos',
+    titulo:'Estás generando interés. Ahora hace falta que sostengas esa conversación.',
+    diagnostico:'<p>Hay energía y conexión en los eventos a los que asistís o las catas que organizás. Cada evento deja personas que disfrutaron conocerte, probar tus vinos o escuchar lo que hacés.</p><p>Muchas incluso se van pensando: "Después le escribo".</p><p>Pero entre la rutina de ambas, esa conversación se enfría y la oportunidad queda ahí, sin avanzar.</p><p>No estás haciendo las cosas mal. Ni es falta de interés.</p><p>Simplemente todavía no usaste una forma sencilla de acompañar a cada persona después del evento, sin que eso dependa de tu memoria o de tener un rato libre.</p><p>Pero calma, porque hay solución.</p>',
+    proximo_titulo:'Empecemos por un seguimiento simple.',
+    proximo_texto:'No necesitás automatizaciones complejas ni aprender herramientas difíciles. Con un recorrido claro y algunos mensajes bien pensados, podés seguir presente sin perder la cercanía que hace única tu forma de vender. En los próximos correos te voy a mostrar cómo hacerlo.',
+    cta:'Revisar mi email'
+  },
+  bajo:{
+    clase:'nivel-bajo',
+    tag:'Resultado: hay una gran oportunidad después de cada evento',
+    titulo:'Tu evento funciona. El trabajo más difícil ya lo hacés: lograr que alguien se acerque. Ahora falta acompañar ese interés.',
+    diagnostico:'<p>Organizar una cata, participar en una feria o presentar tus vinos requiere tiempo, energía y mucha dedicación.</p><p>Y cuando alguien se detiene a conversar con vos, ya pasó lo más difícil: conseguiste interés y confianza.</p><p>Lo que falta no es esfuerzo. Es una manera de continuar esa conversación cuando el evento termina.</p><p>Porque si ese contacto no recibe un próximo paso, es muy fácil que la intención se diluya entre las cosas que pasan en el día a día.</p><p>La buena noticia es que no hace falta perseguir a nadie, ni estar enviando mensajes todo el tiempo. Hace falta un recorrido simple que mantenga vivo ese vínculo.</p>',
+    proximo_titulo:'Empezá por nutrir lo que ya conseguiste: la atención de quien asistió o habló con vos.',
+    proximo_texto:'Antes de pensar en el mensaje perfecto, hay que resolver lo básico: saber quién estuvo ahí y qué pasa con esa persona en las 48 horas siguientes. Vamos a recorrer ese proceso paso a paso. En los próximos correos te voy a mostrar cómo acompañar a cada contacto durante los días posteriores al evento con un sistema sencillo y humanizado, para que más personas vuelvan a elegirte sin sentir que les estás vendiendo todo el tiempo.',
+    cta:'Revisar mi email'
+  }
+};
 
-  // ── Link directo al webmail según el dominio del email capturado ──
-  function getWebmailLink(email) {
-    const dominio = (email.split('@')[1] || '').toLowerCase();
-    const proveedores = {
-      'gmail.com':      'https://mail.google.com/mail/u/0/#inbox',
-      'googlemail.com': 'https://mail.google.com/mail/u/0/#inbox',
-      'outlook.com':    'https://outlook.live.com/mail/0/inbox',
-      'hotmail.com':    'https://outlook.live.com/mail/0/inbox',
-      'live.com':       'https://outlook.live.com/mail/0/inbox',
-      'yahoo.com':      'https://mail.yahoo.com',
-      'yahoo.com.ar':   'https://mail.yahoo.com',
-      'icloud.com':     'https://www.icloud.com/mail',
-      'me.com':         'https://www.icloud.com/mail'
+function getWebmailLink(email){
+  const d=(email.split('@')[1]||'').toLowerCase();
+  const p={'gmail.com':'https://mail.google.com/mail/u/0/#inbox','googlemail.com':'https://mail.google.com/mail/u/0/#inbox','outlook.com':'https://outlook.live.com/mail/0/inbox','hotmail.com':'https://outlook.live.com/mail/0/inbox','live.com':'https://outlook.live.com/mail/0/inbox','yahoo.com':'https://mail.yahoo.com','yahoo.com.ar':'https://mail.yahoo.com','icloud.com':'https://www.icloud.com/mail','me.com':'https://www.icloud.com/mail'};
+  return p[d]||'mailto:';
+}
+
+function selClass(v){return v==='si'?'sel-si':v==='no'?'sel-no':'sel-nose';}
+
+document.querySelectorAll('.q').forEach(item=>{
+  const id=parseInt(item.dataset.id);
+  item.querySelectorAll('.opt').forEach(op=>{
+    const pick=()=>{
+      respuestas[id]=op.dataset.value;
+      item.querySelectorAll('.opt').forEach(o=>o.classList.remove('sel-si','sel-no','sel-nose'));
+      op.classList.add(selClass(op.dataset.value));
+      actualizarProgreso();
     };
-    return proveedores[dominio] || 'mailto:';
-  }
-
-  function getOpcionClass(v) {
-    return v === 'si' ? 'selected-si' : v === 'no' ? 'selected-no' : 'selected-nose';
-  }
-
-  document.querySelectorAll('.pregunta-item').forEach(item => {
-    const id = parseInt(item.dataset.id);
-    item.querySelectorAll('.opcion').forEach(op => {
-      op.addEventListener('click', () => {
-        respuestas[id] = op.dataset.value;
-        item.querySelectorAll('.opcion').forEach(o => o.classList.remove('selected-si','selected-no','selected-nose'));
-        op.classList.add(getOpcionClass(op.dataset.value));
-        actualizarProgreso();
-      });
-    });
+    op.addEventListener('click',pick);
+    op.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();pick();}});
   });
+});
 
-  function actualizarProgreso() {
-    const n = Object.keys(respuestas).length;
-    document.getElementById('progreso-count').textContent = `${n} de ${total} respondidas`;
-    document.getElementById('progreso-fill').style.width = `${(n/total)*100}%`;
-    const btn = document.getElementById('btn-resultado');
-    btn.classList.toggle('activo', n === total);
+function actualizarProgreso(){
+  const n=Object.keys(respuestas).length;
+  document.getElementById('progreso-count').textContent=`${n} de ${total} respondidas`;
+  document.getElementById('progreso-fill').style.width=`${(n/total)*100}%`;
+  document.getElementById('btn-resultado').classList.toggle('activo',n===total);
+}
+
+document.getElementById('btn-resultado').addEventListener('click',()=>{
+  if(Object.keys(respuestas).length<total)return;
+  document.getElementById('btn-resultado').style.display='none';
+  const g=document.getElementById('email-gate');
+  g.classList.add('visible');
+  setTimeout(()=>g.scrollIntoView({behavior:'smooth',block:'start'}),50);
+});
+
+document.getElementById('btn-enviar').addEventListener('click',async()=>{
+  const nombre=document.getElementById('input-nombre').value.trim();
+  const email=document.getElementById('input-email').value.trim();
+  const errorEl=document.getElementById('email-error');
+  const btn=document.getElementById('btn-enviar');
+  if(!email||!email.includes('@')){errorEl.style.display='block';return;}
+  errorEl.style.display='none';
+  btn.disabled=true;
+  btn.textContent='Enviando...';
+
+  const siCount=Object.values(respuestas).filter(v=>v==='si').length;
+  let nivel=siCount>=4?'alto':siCount>=2?'medio':'bajo';
+
+  try{
+    const resp=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nombre,email,respuestas})});
+    if(resp.ok){
+      const data=await resp.json();
+      if(data&&data.nivel)nivel=data.nivel;
+    }else{console.error('El Worker respondió con error:',resp.status);}
+  }catch(e){console.error('Error de red hacia el Worker:',e);}
+
+  mostrarResultado(nivel,email);
+});
+
+function mostrarResultado(nivel,email){
+  document.getElementById('email-gate').style.display='none';
+  const r=resultados[nivel];
+  let li='';
+  for(let i=1;i<=5;i++){
+    const p=labels[i][respuestas[i]].split(' ');
+    li+=`<li><span>${p[0]}</span><span>${p.slice(1).join(' ')}</span></li>`;
   }
+  document.getElementById('resultado').innerHTML=`
+    <div class="res-h ${r.clase}">
+      <p class="res-tag">${r.tag}</p>
+      <h2 class="res-t">${r.titulo}</h2>
+      <div class="res-d">${r.diagnostico}</div>
+    </div>
+    <div class="desg"><h4>Tus respuestas</h4><ul>${li}</ul></div>
+    <div class="next">
+      <p class="eyebrow">Próximo paso</p>
+      <h3>${r.proximo_titulo}</h3>
+      <p>${r.proximo_texto}</p>
+      <a class="btn" href="${getWebmailLink(email)}" target="_blank" rel="noopener">${r.cta}</a>
+      <p class="nota">Revisá tu casilla: te llega en minutos.</p>
+    </div>`;
+  const res=document.getElementById('resultado');
+  res.classList.add('visible');
+  document.getElementById('reiniciar-wrap').style.display='block';
+  setTimeout(()=>res.scrollIntoView({behavior:'smooth',block:'start'}),50);
+}
 
-  // PASO 1: mostrar email gate
-  document.getElementById('btn-resultado').addEventListener('click', () => {
-    if (Object.keys(respuestas).length < total) return;
-    document.getElementById('btn-resultado').style.display = 'none';
-    const gate = document.getElementById('email-gate');
-    gate.classList.add('visible');
-    setTimeout(() => gate.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
-  });
-
-  // PASO 2: enviar al Worker (que a su vez habla con MailerLite) y mostrar resultado
-  document.getElementById('btn-enviar').addEventListener('click', async () => {
-    const nombre = document.getElementById('input-nombre').value.trim();
-    const email  = document.getElementById('input-email').value.trim();
-    const errorEl = document.getElementById('email-error');
-    const btn = document.getElementById('btn-enviar');
-
-    if (!email || !email.includes('@')) {
-      errorEl.style.display = 'block';
-      return;
-    }
-    errorEl.style.display = 'none';
-    btn.disabled = true;
-    btn.textContent = 'Enviando...';
-
-    // Cálculo local, como respaldo si el Worker no responde
-    const siCount = Object.values(respuestas).filter(v => v === 'si').length;
-    let nivel = siCount >= 4 ? 'alto' : siCount >= 2 ? 'medio' : 'bajo';
-
-    try {
-      const resp = await fetch(WORKER_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nombre, email, respuestas })
-      });
-
-      if (resp.ok) {
-        const data = await resp.json();
-        // Usamos el nivel que calculó el Worker, para que coincida con lo que se guardó en MailerLite
-        if (data && data.nivel) nivel = data.nivel;
-      } else {
-        console.error('El Worker respondió con error:', resp.status);
-      }
-    } catch (e) {
-      // Si falla la conexión igual mostramos el resultado, pero queda logueado
-      console.error('Error de red hacia el Worker:', e);
-    }
-
-    mostrarResultado(nivel, email);
-  });
-
-  function mostrarResultado(nivel, email) {
-    document.getElementById('email-gate').style.display = 'none';
-
-    const r = resultados[nivel];
-    const ctaHref = getWebmailLink(email);
-
-    let desgloseHTML = '<ul class="desglose-lista">';
-    for (let i = 1; i <= 5; i++) {
-      const v = respuestas[i];
-      const partes = labels[i][v].split(' ');
-      const icono = partes[0];
-      const texto = partes.slice(1).join(' ');
-      desgloseHTML += `<li><span class="icono">${icono}</span><span>${texto}</span></li>`;
-    }
-    desgloseHTML += '</ul>';
-
-    document.getElementById('resultado').innerHTML = `
-      <div class="resultado-header ${r.clase}">
-        <p class="resultado-tag">${r.tag}</p>
-        <h2 class="resultado-titulo">${r.titulo}</h2>
-        <div class="resultado-diagnostico">${r.diagnostico}</div>
-      </div>
-      <div class="desglose">
-        <p class="desglose-label">Tus respuestas</p>
-        ${desgloseHTML}
-      </div>
-      <div class="proximo">
-        <p class="proximo-tag">Próximo paso</p>
-        <h3>${r.proximo_titulo}</h3>
-        <p>${r.proximo_texto}</p>
-        <a href="${ctaHref}" target="_blank" rel="noopener" class="proximo-cta">${r.cta}</a>
-        <p class="proximo-nota">Revisá tu casilla — te llega en minutos.</p>
-      </div>
-    `;
-
-    const res = document.getElementById('resultado');
-    res.classList.add('visible');
-    document.getElementById('reiniciar-wrap').style.display = 'block';
-    setTimeout(() => res.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
-  }
-
-  document.getElementById('btn-reiniciar').addEventListener('click', () => {
-    Object.keys(respuestas).forEach(k => delete respuestas[k]);
-    document.querySelectorAll('.opcion').forEach(o => o.classList.remove('selected-si','selected-no','selected-nose'));
-    document.getElementById('resultado').classList.remove('visible');
-    document.getElementById('resultado').innerHTML = '';
-    document.getElementById('reiniciar-wrap').style.display = 'none';
-    document.getElementById('email-gate').classList.remove('visible');
-    document.getElementById('email-gate').style.display = '';
-    document.getElementById('btn-resultado').style.display = '';
-    document.getElementById('btn-resultado').classList.remove('activo');
-    document.getElementById('input-nombre').value = '';
-    document.getElementById('input-email').value = '';
-    document.getElementById('btn-enviar').disabled = false;
-    document.getElementById('btn-enviar').textContent = 'Ver mi resultado →';
-    actualizarProgreso();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
+document.getElementById('btn-reiniciar').addEventListener('click',()=>{
+  Object.keys(respuestas).forEach(k=>delete respuestas[k]);
+  document.querySelectorAll('.opt').forEach(o=>o.classList.remove('sel-si','sel-no','sel-nose'));
+  const res=document.getElementById('resultado');
+  res.classList.remove('visible');res.innerHTML='';
+  document.getElementById('reiniciar-wrap').style.display='none';
+  const g=document.getElementById('email-gate');
+  g.classList.remove('visible');g.style.display='';
+  const b=document.getElementById('btn-resultado');
+  b.style.display='';b.classList.remove('activo');
+  document.getElementById('input-nombre').value='';
+  document.getElementById('input-email').value='';
+  const e=document.getElementById('btn-enviar');
+  e.disabled=false;e.textContent='Ver mi resultado';
+  actualizarProgreso();
+  window.scrollTo({top:0,behavior:'smooth'});
+});
 </script>
 </body>
 </html>
